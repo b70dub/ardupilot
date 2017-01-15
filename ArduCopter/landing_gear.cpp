@@ -19,6 +19,13 @@ void Copter::landinggear_update(){
             landinggear.force_deploy(true);
         }
 
+        // Set the landing gear state for _command_mode == LandingGear_Auto based on the current altitude
+        //Should this use baro_alt instead?
+        if(inertial_nav.get_altitude()  < LAND_GEAR_ALT_THRESH_CM)
+            landinggear.landinggear_auto_deploy(true);
+        else
+            landinggear.landinggear_auto_deploy(false);
+
         landinggear.update();
 
         // send event message to datalog if status has changed

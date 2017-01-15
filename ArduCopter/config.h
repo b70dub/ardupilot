@@ -372,6 +372,10 @@
 #define LAND_RANGEFINDER_MIN_ALT_CM 200
 #endif
 
+#ifndef LAND_GEAR_ALT_THRESH_CM
+#define LAND_GEAR_ALT_THRESH_CM     500     // threshold at which landing gear is retracted or extended
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 // Landing Detector
 //

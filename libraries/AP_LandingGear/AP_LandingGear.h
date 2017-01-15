@@ -26,6 +26,7 @@ public:
         _retract_enabled(false),
         _deployed(false),
         _force_deploy(false),
+        _auto_deploy(true),
         _command_mode(LandingGear_Deploy)
     {
         // setup parameter defaults
@@ -47,6 +48,9 @@ public:
     /// force_deploy - set to true to force gear to deploy
     void force_deploy(bool force) { _force_deploy = force;}
 
+    /// auto_position - set to true to command gear to deploy when _command_mode = LandingGear_Auto
+    void landinggear_auto_deploy(bool state) { _auto_deploy = state;}
+
     static const struct AP_Param::GroupInfo        var_info[];
 
 private:
@@ -60,6 +64,7 @@ private:
     // internal variables
     bool        _deployed;              // true if the landing gear has been deployed, initialized false
     bool        _force_deploy;          // used by main code to force landing gear to deploy, such as in Land mode
+    bool        _auto_deploy;           // used by main code to set the landing gear state to deploy(true) or retract(false) when _command_mode is set to "Auto"
     LandingGearCommandMode  _command_mode;  // pilots commanded control mode: Manual Deploy, Auto, or Manual Retract
     
     /// enable - enable landing gear retraction

@@ -2,7 +2,7 @@
 
 #include "ap_version.h"
 
-#define THISFIRMWARE "ArduPlane V3.8.0beta1"
+#define THISFIRMWARE "ArduPlane V3.8.0beta1-brian"
 #define FIRMWARE_VERSION 3,8,0,FIRMWARE_VERSION_TYPE_BETA
 
 #ifndef GIT_VERSION

@@ -81,4 +81,13 @@ void AP_LandingGear::update()
     if (_command_mode == LandingGear_Retract){
         retract();
     }    
+
+    if (_command_mode == LandingGear_Auto){
+        if(_auto_deploy){
+            deploy();
+        }
+        else{
+            retract();
+        }
+    }
 }
