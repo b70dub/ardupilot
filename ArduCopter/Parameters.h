@@ -459,6 +459,7 @@ public:
 
     AP_Int8         throw_motor_start;
     AP_Int8         terrain_follow;
+    AP_Int8         portable_logger_arm;
 
     AP_Int16                rc_speed; // speed of fast RC Channels in Hz
 

@@ -286,6 +286,15 @@ enum PayloadPlaceStateType {
     PayloadPlaceStateType_Done,
 };
 
+enum PortableLoggerState{
+        PORTABLE_LOGGER_DISARMED = 0,
+        PORTABLE_LOGGER_DISARMED_ONE_TAP,
+        PORTABLE_LOGGER_DISARMED_TWO_TAP,
+        PORTABLE_LOGGER_ARMED,
+        PORTABLE_LOGGER_ARMED_ONE_TAP,
+        PORTABLE_LOGGER_ARMED_TWO_TAP,
+    };
+
 // bit options for DEV_OPTIONS parameter
 enum DevOptions {
     DevOptionADSBMAVLink = 1,

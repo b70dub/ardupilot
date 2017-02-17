@@ -1541,6 +1541,13 @@ void AP_InertialSensor::set_accel_peak_hold(uint8_t instance, const Vector3f &ac
         _peak_hold_state.accel_peak_hold_neg_x = accel.x;
         _peak_hold_state.accel_peak_hold_neg_x_age = now + AP_INERTIAL_SENSOR_ACCEL_PEAK_DETECT_TIMEOUT_MS;
     }
+
+    // positive x peak(min) hold detector
+    if (accel.x > _peak_hold_state.accel_peak_hold_pos_x ||
+        _peak_hold_state.accel_peak_hold_pos_x_age <= now) {
+        _peak_hold_state.accel_peak_hold_pos_x = accel.x;
+        _peak_hold_state.accel_peak_hold_pos_x_age = now + AP_INERTIAL_SENSOR_ACCEL_PEAK_DETECT_TIMEOUT_MS;
+    }
 }
 
 // retrieve latest calculated vibration levels

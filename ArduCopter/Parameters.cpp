@@ -883,6 +883,13 @@ const AP_Param::Info Copter::var_info[] = {
     // @User: Standard
     GSCALAR(terrain_follow, "TERRAIN_FOLLOW", 0),
 
+    // @Param: PORTABLE_LOGGER_ARM
+    // @DisplayName: Portable Logger Arming
+    // @Description: Controls arming (to start/stop logging) when used as a portable datalogger
+    // @Values: 0:Not enabled, 1:Enabled
+    // @User: Standard
+    GSCALAR(portable_logger_arm, "PORTABLE_LOGGER_ARM", 0),
+
     // @Group: 
     // @Path: Parameters.cpp
     GOBJECT(g2, "",  ParametersG2),
@@ -988,6 +995,8 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Values: 0:Undefined, 1:Quad, 2:Hexa, 3:Octa, 4:OctaQuad, 5:Y6, 6:Heli, 7:Tri, 8:SingleCopter, 9:CoaxCopter
     // @User: Standard
     AP_GROUPINFO("FRAME_CLASS", 15, ParametersG2, frame_class, 0),
+
+
 
     // @Group: SERVO
     // @Path: ../libraries/SRV_Channel/SRV_Channel.cpp

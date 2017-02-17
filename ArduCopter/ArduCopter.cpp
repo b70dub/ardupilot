@@ -153,6 +153,7 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
     SCHED_TASK(userhook_SuperSlowLoop, 1,   75),
 #endif
     SCHED_TASK(button_update,          5,    100),
+    SCHED_TASK(portable_logger_arming_update,   10,    100),
     SCHED_TASK(stats_update,           1,    100),
 };
 
@@ -217,6 +218,29 @@ void Copter::stats_update(void)
 {
     g2.stats.update();
 }
+
+void Copter::portable_logger_arming_update(void)
+{
+    if(!g.portable_logger_arm){
+        return;
+    }
+/*
+    enum{
+        PORTABLE_LOGGER_DISARMED = 0,
+        PORTABLE_LOGGER_DISARMED_ONE_TAP,
+        PORTABLE_LOGGER_DISARMED_TWO_TAP,
+        PORTABLE_LOGGER_ARMED,
+        PORTABLE_LOGGER_ARMED_ONE_TAP,
+        PORTABLE_LOGGER_ARMED_TWO_TAP,
+    };
+*/
+    if(!arming.is_armed()){
+
+        if(ins.get_accel_peak_hold_neg_x() > (float)2.0)
+
+    }
+}
+
 
 void Copter::loop()
 {

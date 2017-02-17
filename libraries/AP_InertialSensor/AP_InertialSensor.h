@@ -235,6 +235,7 @@ public:
     // accel peak hold detector
     void set_accel_peak_hold(uint8_t instance, const Vector3f &accel);
     float get_accel_peak_hold_neg_x() const { return _peak_hold_state.accel_peak_hold_neg_x; }
+    float get_accel_peak_hold_pos_x() const { return _peak_hold_state.accel_peak_hold_pos_x; }
 
     //Returns accel calibrator interface object pointer
     AP_AccelCal* get_acal() const { return _acal; }
@@ -412,6 +413,8 @@ private:
     struct PeakHoldState {
         float accel_peak_hold_neg_x;
         uint32_t accel_peak_hold_neg_x_age;
+        float accel_peak_hold_pos_x;
+        uint32_t accel_peak_hold_pos_x_age;
     } _peak_hold_state;
 
     // threshold for detecting stillness
