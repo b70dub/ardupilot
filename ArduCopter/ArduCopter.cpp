@@ -225,19 +225,180 @@ void Copter::portable_logger_arming_update(void)
         return;
     }
 /*
-    enum{
-        PORTABLE_LOGGER_DISARMED = 0,
+    PORTABLE_LOGGER_DISARMED = 0,
         PORTABLE_LOGGER_DISARMED_ONE_TAP,
         PORTABLE_LOGGER_DISARMED_TWO_TAP,
+        PORTABLE_LOGGER_DISARMED_THREE_TAP,
         PORTABLE_LOGGER_ARMED,
         PORTABLE_LOGGER_ARMED_ONE_TAP,
         PORTABLE_LOGGER_ARMED_TWO_TAP,
-    };
+        PORTABLE_LOGGER_ARMED_THREE_TAP,
 */
+    static uint32_t previous_time_ms = 0;
+    static bool pos_pulse_detected = false;
+    static bool neg_pulse_detected = false;
+
+    uint32_t time_now_ms = millis();
+
+    //Check to see if we are trying to arm
     if(!arming.is_armed()){
 
-        if(ins.get_accel_peak_hold_neg_x() > (float)2.0)
+        if((ins.get_accel_peak_hold_neg_x() < (float)-2.0) && !neg_pulse_detected{
 
+            neg_pulse_detected = true;
+
+            // check if the last pulse was outside arming frequency window
+            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS) {
+                switch (PortableLoggerState) {
+                    case PORTABLE_LOGGER_DISARMED:
+                        PortableLoggerState = PORTABLE_LOGGER_ARMED_ONE_TAP;
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_ONE_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_TWO_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_THREE_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_ARMED:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_ARMED_ONE_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_ARMED_TWO_TAP;
+                        break;
+                    case PORTABLE_LOGGER_ARMED_TWO_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_ARMED_THREE_TAP;
+                        break;
+                    case PORTABLE_LOGGER_ARMED_THREE_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                        break;
+                    default:
+                        break;
+                    }
+                previous_time_ms = time_now_ms;
+            }
+            else{   // Otherwise reset the arming sequence if it is not already armed
+
+                switch (PortableLoggerState) {
+                case PORTABLE_LOGGER_DISARMED:
+                    break;
+                case PORTABLE_LOGGER_DISARMED_ONE_TAP:
+                    break;
+                case PORTABLE_LOGGER_DISARMED_TWO_TAP:
+                    break;
+                case PORTABLE_LOGGER_DISARMED_THREE_TAP:
+                    break;
+                case PORTABLE_LOGGER_ARMED:
+                    break;
+                case PORTABLE_LOGGER_ARMED_ONE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                case PORTABLE_LOGGER_ARMED_TWO_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                case PORTABLE_LOGGER_ARMED_THREE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                default:
+                    break;
+                }
+                previous_time_ms = time_now_ms;
+            }
+        }
+
+        //Reset the pulse detected flags
+        else if((ins.get_accel_peak_hold_neg_x() > (float)-0.5) && (ins.get_accel_peak_hold_pos_x() < (float)0.5)) {
+            neg_pulse_detected = false;
+            pos_pulse_detected = false;
+        }
+    }
+    //Check to see if we are trying to disarm
+    else{
+
+
+        if((ins.get_accel_peak_hold_pos_x() > (float)2.0) && !pos_pulse_detected{
+
+            pos_pulse_detected = true;
+
+            // check if the last pulse was outside arming frequency window
+            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS) {
+                switch (PortableLoggerState) {
+                    case PORTABLE_LOGGER_DISARMED:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_ONE_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_TWO_TAP;
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_TWO_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_THREE_TAP;
+                        break;
+                    case PORTABLE_LOGGER_DISARMED_THREE_TAP:
+                        PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                        break;
+                    case PORTABLE_LOGGER_ARMED:
+                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_ONE_TAP;
+                        break;
+                    case PORTABLE_LOGGER_ARMED_ONE_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_ARMED_TWO_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    case PORTABLE_LOGGER_ARMED_THREE_TAP:
+                        //PLAY ERROR SOUND
+                        break;
+                    default:
+                        break;
+                    }
+                previous_time_ms = time_now_ms;
+            }
+            else{   // Otherwise reset the arming sequence if it is not already armed
+
+                switch (PortableLoggerState) {
+                case PORTABLE_LOGGER_DISARMED:
+                    break;
+                case PORTABLE_LOGGER_DISARMED_ONE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    break;
+                case PORTABLE_LOGGER_DISARMED_TWO_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    break;
+                case PORTABLE_LOGGER_DISARMED_THREE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    break;
+                case PORTABLE_LOGGER_ARMED:
+                    break;
+                case PORTABLE_LOGGER_ARMED_ONE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                case PORTABLE_LOGGER_ARMED_TWO_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                case PORTABLE_LOGGER_ARMED_THREE_TAP:
+                    //PLAY ERROR SOUND
+                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    break;
+                default:
+                    break;
+                }
+                previous_time_ms = time_now_ms;
+            }
+        }
+        //Reset the pulse detected flags
+        else if((ins.get_accel_peak_hold_neg_x() > (float)-0.5) && (ins.get_accel_peak_hold_pos_x() < (float)0.5)) {
+            neg_pulse_detected = false;
+            pos_pulse_detected = false;
+        }
     }
 }
 
