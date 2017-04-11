@@ -286,7 +286,7 @@ enum PayloadPlaceStateType {
     PayloadPlaceStateType_Done,
 };
 
-enum PortableLoggerState{
+enum PortableLoggerStateType{
         PORTABLE_LOGGER_DISARMED = 0,
         PORTABLE_LOGGER_DISARMED_ONE_TAP,
         PORTABLE_LOGGER_DISARMED_TWO_TAP,

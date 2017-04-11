@@ -73,6 +73,7 @@
  */
 
 #include "Copter.h"
+#include <GCS_MAVLink/GCS_MAVLink.h>
 
 #define SCHED_TASK(func, rate_hz, max_time_micros) SCHED_TASK_CLASS(Copter, &copter, func, rate_hz, max_time_micros)
 
@@ -243,15 +244,17 @@ void Copter::portable_logger_arming_update(void)
     //Check to see if we are trying to arm
     if(!arming.is_armed()){
 
-        if((ins.get_accel_peak_hold_neg_x() < (float)-2.0) && !neg_pulse_detected{
+        if((ins.get_accel_peak_hold_neg_x() < (float)-2.0) && !neg_pulse_detected){
+
+            GCS_MAVLINK::send_statustext_all(MAV_SEVERITY_INFO, "DL: neg_pulse_detected %f", ins.get_accel_peak_hold_neg_x());
 
             neg_pulse_detected = true;
 
             // check if the last pulse was outside arming frequency window
-            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS) {
-                switch (PortableLoggerState) {
+            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS)) {
+                switch (portable_logger_state) {
                     case PORTABLE_LOGGER_DISARMED:
-                        PortableLoggerState = PORTABLE_LOGGER_ARMED_ONE_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_ARMED_ONE_TAP;
                         break;
                     case PORTABLE_LOGGER_DISARMED_ONE_TAP:
                         //PLAY ERROR SOUND
@@ -266,13 +269,13 @@ void Copter::portable_logger_arming_update(void)
                         //PLAY ERROR SOUND
                         break;
                     case PORTABLE_LOGGER_ARMED_ONE_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_ARMED_TWO_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_ARMED_TWO_TAP;
                         break;
                     case PORTABLE_LOGGER_ARMED_TWO_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_ARMED_THREE_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_ARMED_THREE_TAP;
                         break;
                     case PORTABLE_LOGGER_ARMED_THREE_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                        portable_logger_state = PORTABLE_LOGGER_ARMED;
                         break;
                     default:
                         break;
@@ -281,7 +284,7 @@ void Copter::portable_logger_arming_update(void)
             }
             else{   // Otherwise reset the arming sequence if it is not already armed
 
-                switch (PortableLoggerState) {
+                switch (portable_logger_state) {
                 case PORTABLE_LOGGER_DISARMED:
                     break;
                 case PORTABLE_LOGGER_DISARMED_ONE_TAP:
@@ -294,15 +297,15 @@ void Copter::portable_logger_arming_update(void)
                     break;
                 case PORTABLE_LOGGER_ARMED_ONE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 case PORTABLE_LOGGER_ARMED_TWO_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 case PORTABLE_LOGGER_ARMED_THREE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 default:
                     break;
@@ -321,27 +324,29 @@ void Copter::portable_logger_arming_update(void)
     else{
 
 
-        if((ins.get_accel_peak_hold_pos_x() > (float)2.0) && !pos_pulse_detected{
+        if((ins.get_accel_peak_hold_pos_x() > (float)2.0) && !pos_pulse_detected){
+
+            GCS_MAVLINK::send_statustext_all(MAV_SEVERITY_INFO, "DL: pos_pulse_detected %f", ins.get_accel_peak_hold_pos_x());
 
             pos_pulse_detected = true;
 
             // check if the last pulse was outside arming frequency window
-            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS) {
-                switch (PortableLoggerState) {
+            if ((time_now_ms - previous_time_ms > PULSE_ARM_DELAY_MS) && (time_now_ms - previous_time_ms < PULSE_ARM_DELAY_MS + PULSE_ARM_DELAY_ERROR_MS)) {
+                switch (portable_logger_state) {
                     case PORTABLE_LOGGER_DISARMED:
                         //PLAY ERROR SOUND
                         break;
                     case PORTABLE_LOGGER_DISARMED_ONE_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_TWO_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_DISARMED_TWO_TAP;
                         break;
                     case PORTABLE_LOGGER_DISARMED_TWO_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_THREE_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_DISARMED_THREE_TAP;
                         break;
                     case PORTABLE_LOGGER_DISARMED_THREE_TAP:
-                        PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                        portable_logger_state = PORTABLE_LOGGER_DISARMED;
                         break;
                     case PORTABLE_LOGGER_ARMED:
-                        PortableLoggerState = PORTABLE_LOGGER_DISARMED_ONE_TAP;
+                        portable_logger_state = PORTABLE_LOGGER_DISARMED_ONE_TAP;
                         break;
                     case PORTABLE_LOGGER_ARMED_ONE_TAP:
                         //PLAY ERROR SOUND
@@ -359,34 +364,34 @@ void Copter::portable_logger_arming_update(void)
             }
             else{   // Otherwise reset the arming sequence if it is not already armed
 
-                switch (PortableLoggerState) {
+                switch (portable_logger_state) {
                 case PORTABLE_LOGGER_DISARMED:
                     break;
                 case PORTABLE_LOGGER_DISARMED_ONE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    portable_logger_state = PORTABLE_LOGGER_ARMED;
                     break;
                 case PORTABLE_LOGGER_DISARMED_TWO_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    portable_logger_state = PORTABLE_LOGGER_ARMED;
                     break;
                 case PORTABLE_LOGGER_DISARMED_THREE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_ARMED;
+                    portable_logger_state = PORTABLE_LOGGER_ARMED;
                     break;
                 case PORTABLE_LOGGER_ARMED:
                     break;
                 case PORTABLE_LOGGER_ARMED_ONE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 case PORTABLE_LOGGER_ARMED_TWO_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 case PORTABLE_LOGGER_ARMED_THREE_TAP:
                     //PLAY ERROR SOUND
-                    PortableLoggerState = PORTABLE_LOGGER_DISARMED;
+                    portable_logger_state = PORTABLE_LOGGER_DISARMED;
                     break;
                 default:
                     break;

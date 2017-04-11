@@ -332,7 +332,7 @@ private:
     } sensor_health;
 
     //Portable logger
-    PortableLoggerState portable_logger_state = PORTABLE_LOGGER_DISARMED;
+    PortableLoggerStateType portable_logger_state = PORTABLE_LOGGER_DISARMED;
 
     // Motor Output
 #if FRAME_CONFIG == HELI_FRAME
