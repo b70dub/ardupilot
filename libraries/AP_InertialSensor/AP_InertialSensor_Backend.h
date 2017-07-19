@@ -82,15 +82,16 @@ public:
       calibration values invalid then this number must be changed.
      */
     enum DevTypes {
-        DEVTYPE_BMI160       = 0x09,
-        DEVTYPE_L3G4200D     = 0x10,
-        DEVTYPE_ACC_LSM303D  = 0x11,
-        DEVTYPE_ACC_BMA180   = 0x12,
-        DEVTYPE_ACC_MPU6000  = 0x13,
-        DEVTYPE_ACC_MPU9250  = 0x16,
-        DEVTYPE_GYR_MPU6000  = 0x21,
-        DEVTYPE_GYR_L3GD20   = 0x22,
-        DEVTYPE_GYR_MPU9250  = 0x24
+        DEVTYPE_BMI160         = 0x09,
+        DEVTYPE_L3G4200D       = 0x10,
+        DEVTYPE_ACC_LSM303D    = 0x11,
+        DEVTYPE_ACC_BMA180     = 0x12,
+        DEVTYPE_ACC_MPU6000    = 0x13,
+        DEVTYPE_ACC_MPU9250    = 0x16,
+        DEVTYPE_ACC_H3LIS331DL = 0x17,
+        DEVTYPE_GYR_MPU6000    = 0x21,
+        DEVTYPE_GYR_L3GD20     = 0x22,
+        DEVTYPE_GYR_MPU9250    = 0x24
     };
         
 protected:
